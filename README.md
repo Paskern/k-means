@@ -1,2 +1,2 @@
 # k-means
-K-means algorithm
+K-means algorithm in Python. 
