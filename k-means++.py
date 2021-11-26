@@ -20,9 +20,45 @@ else:
     print('Error. Try again!')
     quit()
 
-# User choice of number of centroids and initialize random centroids from df
+# User choice of number of centroids and initialize first centroid randomly from df
 k = int(input('\nEnter number of centroids:'))
-centroids = df.sample(n=k).reset_index(drop=True)
+centroids = df.sample(n=1).reset_index(drop=True)
+
+# Function to calculate distance to centroids
+def calculate_distance_initial(df, centroids):
+    # Calculate the distance and adding it to df in a new column
+    for i in range(len(centroids)):
+        df['distance_from_{}'.format(i)] = (
+            np.sqrt(
+                (df['x'] - centroids['x'][i]) ** 2
+                + (df['y'] - centroids['y'][i]) ** 2
+                + (df['z'] - centroids['z'][i]) ** 2
+            )
+        )
+
+    distance_cols = ['distance_from_{}'.format(i) for i in range(len(centroids))]
+    probability = df.loc[:, distance_cols].min(axis=1) ** 2
+    df['probability'] = probability / probability.sum()
+
+
+    return df
+
+# Function to initialize centroids with k-means++ algorithm
+def initialize_centroids(df, centroids):
+    
+    for j in range(k-1):
+        calculate_distance_initial(df, centroids)
+        print('\n', df)
+
+        temp = df.sample(n=1, weights='probability')
+        print(temp)
+        centroids = centroids.append(temp[["x", "y", "z"]]).reset_index(drop=True)
+
+    print(centroids)
+        
+    return centroids
+    
+centroids = initialize_centroids(df, centroids)
 
 # Enter df in visual figure
 fig = plt.figure(figsize=(10,8))
@@ -39,7 +75,6 @@ for i in range(k):
 def calculate_distance(df, centroids):
     # Calculate the distance and adding it to df in a new column
     for i in range(k):
-        print(i)
         df['distance_from_{}'.format(i)] = (
             np.sqrt(
                 (df['x'] - centroids['x'][i]) ** 2
@@ -108,5 +143,5 @@ ax4.set_title("4. Final clustering", fontsize=10)
 for i in range(k):
     ax4.scatter(centroids['x'][i], centroids['y'][i], centroids['z'][i], color=colors[i%6], edgecolor='k', s=30)
 
-plt.suptitle('k-means algorithm',fontweight ="bold")
+plt.suptitle('k-means++ algorithm',fontweight ="bold")
 plt.show()
