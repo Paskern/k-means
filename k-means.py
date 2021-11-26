@@ -39,7 +39,6 @@ for i in range(k):
 def calculate_distance(df, centroids):
     # Calculate the distance and adding it to df in a new column
     for i in range(k):
-        print(i)
         df['distance_from_{}'.format(i)] = (
             np.sqrt(
                 (df['x'] - centroids['x'][i]) ** 2
@@ -107,6 +106,8 @@ ax4.scatter(df['x'], df['y'], df['z'], color=df['color'], s=5)
 ax4.set_title("4. Final clustering", fontsize=10)
 for i in range(k):
     ax4.scatter(centroids['x'][i], centroids['y'][i], centroids['z'][i], color=colors[i%6], edgecolor='k', s=30)
+
+print(df)
 
 plt.suptitle('k-means algorithm',fontweight ="bold")
 plt.show()

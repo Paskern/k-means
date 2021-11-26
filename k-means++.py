@@ -36,10 +36,11 @@ def calculate_distance_initial(df, centroids):
             )
         )
 
+    # Gather all distance columsn in df
+    # Find the probability using the squared distance to the closest centroid over the sum (normalize)
     distance_cols = ['distance_from_{}'.format(i) for i in range(len(centroids))]
     probability = df.loc[:, distance_cols].min(axis=1) ** 2
     df['probability'] = probability / probability.sum()
-
 
     return df
 
@@ -48,13 +49,12 @@ def initialize_centroids(df, centroids):
     
     for j in range(k-1):
         calculate_distance_initial(df, centroids)
-        print('\n', df)
+        ### Uncomment to view probability for choosing each data point as next centroid
+        # print('\n Centroid #', j+2, '\n\n', df)               
 
+        # Select the next centroid using the weighted probability
         temp = df.sample(n=1, weights='probability')
-        print(temp)
         centroids = centroids.append(temp[["x", "y", "z"]]).reset_index(drop=True)
-
-    print(centroids)
         
     return centroids
     
@@ -142,6 +142,8 @@ ax4.scatter(df['x'], df['y'], df['z'], color=df['color'], s=5)
 ax4.set_title("4. Final clustering", fontsize=10)
 for i in range(k):
     ax4.scatter(centroids['x'][i], centroids['y'][i], centroids['z'][i], color=colors[i%6], edgecolor='k', s=30)
+
+print(df)
 
 plt.suptitle('k-means++ algorithm',fontweight ="bold")
 plt.show()
