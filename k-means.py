@@ -20,9 +20,11 @@ else:
     print('Error. Try again!')
     quit()
 
-# User choice of number of centroids and initialize random centroids
+# User choice of number of centroids and initialize random centroids from df
 k = int(input('\nEnter number of centroids:'))
-centroids = pd.DataFrame(np.random.randint(0,100,size=(k,3)), columns=list('xyz'))
+centroids = df.sample(n=k).reset_index(drop=True)
+
+print(centroids)
 
 # Enter df in visual figure
 fig = plt.figure(figsize=(10,8))
