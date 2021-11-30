@@ -36,7 +36,7 @@ def calculate_distance_initial(df, centroids):
             )
         )
 
-    # Gather all distance columsn in df
+    # Gather all distance columns in df
     # Find the probability using the squared distance to the closest centroid over the sum (normalize)
     distance_cols = ['distance_from_{}'.format(i) for i in range(len(centroids))]
     probability = df.loc[:, distance_cols].min(axis=1) ** 2
